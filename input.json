@@ -1,0 +1,9 @@
+{
+    "topic_labels": ["Food", "Comedy", "Technology", "Sports", "School"],
+    "sentiment_labels": ["Positive", "Neutral", "Negative"],
+    "sentences": [
+        "I like Food.",
+        "Why did the chicken cross the road?",
+        "This new iPhone is great!"
+    ]
+}
