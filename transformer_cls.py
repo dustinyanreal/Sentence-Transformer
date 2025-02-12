@@ -3,8 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from transformers import AutoModel, AutoTokenizer
 
-TOKENIZER = AutoTokenizer.from_pretrained("bert-base-uncased")
-MODEL = AutoModel.from_pretrained("bert-base-uncased")
+TOKENIZER = AutoTokenizer.from_pretrained("bert-base-cased")
+MODEL = AutoModel.from_pretrained("bert-base-cased")
 
 class SentenceTransformer(nn.Module):
     def __init__(self,

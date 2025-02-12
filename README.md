@@ -1,22 +1,30 @@
-#Sentence Transformer
+# Sentence Transformer
 
-##Overview
-This is a project that takes in sentences and analyzes them. First the project produces embeddings used for different NLP tasks. Next the project takes those embeddings and uses them in Sentence Classification and Sentiement Analysis.
+## Overview
 
-##Task 1
-In Task 1, I built a class that acts as my transformer model.
+This project processes sentences to generate embeddings for various NLP tasks. These embeddings are then used for sentence classification and sentiment analysis, enabling deeper insights into textual data.
 
-The transformer backbone is 'bert-base-uncased'. I chose to use a pre-trained bert model because... This also came with a pre-trained tokenizer ...
 
-I developed a function, encode to transform a regular sentence into a sentence embedding.
-I took a sentence and tokenized it. That means for every word inside a sentence, it became a token. This also meant that I had to normalize every sentence. If a sentence was too short, I had to pad it. If a sentence was too long, I had to truncate it so that every sentence was the same length. I had to do this so that all inputs entering the model would be the same.
+## Task 1: Sentence Transformer Implementation
 
-Then I produced the sentence embeddings with the last hidden state's mean... (reason)
+In Task1, I built a class that servers as my transformer mode, leveraging **bert-base-cased** as the backbone. 
 
-Lastly, I normalized the sentence embeddings. (reason)
+I chose this pre-trained BERT model because it has been trained on a vast corpus of text, allowing it to capture contextual representations of words. Using this pre-trained model significantly recudes training time and computational costs while also providing good performance for many NLP tasks. Additionally it comes with a pre-trained tokenize, which makes consistent tokenization with the model's expectaions.
 
-**Reason for my building structure:** (reasons for choices)
+To generate sentence embeddings, I developed an encode function that transforms a regular sentence into a numerical represenation.
+- The first step in this process is tokenization, breaking down a sentence into individual tokens. Since **bert-base-cased** requires 512 tokens as an input, I normallized each sentence by padding shorter ones and truncating longer ones. This ensurres that all input sequences maintain a uniform lenth.
+- Once tokenized, I produced sentence embeddings by taking the mean of the last hidden states. This helps capture semantic meaning of a sentence.
+- Finally, I normalized the sentence embeddings to ensure that their values remain in a consistent range. Normalization helps improve numerical stability and enhances performance in tasks. (i.e classification and sentiment analysis **TASK 2)
 
+**Reason for my building structure:**
+
+- **Transformer Backbone:** ``` bert-base-cased ``` has been trained on a massive corpus, enabling it to generate high-quality embeddings. The cased variant captures capitalization which is crucial in Task 2, where capitalization can be the different in topics and sentiment analysis.
+- **AutoTokenizer:** This ensured that the tokenization process was the same in how BERT was trained. If I used another tokenizer such as NLTK, it could lead to embeddings that give suboptimal performance.
+- **Mean Pooling:** While there are pooling methods, such as maxpooling which focuses on the most activated token, mean pooling gives more of a balanced representation of a sentence.
+- **Normalization:** This method prevents large variations, by keeping embeddings in a similar numerical range.
+
+
+**Code for Task 1**
 ```python
 import torch
 import torch.nn as nn
