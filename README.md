@@ -144,69 +144,75 @@ def predict(self, sentence):
 ## Task 3: Training Considerations
 
 ### Freeze Entire Network
-- All network parameters are frozen.
+
+**Description:** All network parameters are frozen.
 
 **Implications:**
 - Model will not learn, weights will not update.
-- Relies on the pre-trained representation
+- The model relies solely on the pre-trained representation
 
 **Advantages:**
 - If the task is similar to the pre-trained task, the model will be able to perform the task well.
-- Doesn't require intensive GPUs, gradients aren't being computed.
+- Doesn't require intensive GPUs usage since gradients aren't being computed.
 
 **When to train:**
-- Freezing entire network, means that it is non-trainable. Should only use if the task that doesnt' require additional training from the base model. Just for inference.
-- If the task at hand is similar to what the model was pre-trained on, then it will perform sufficently.
+- Freezing entire network makes the model non-trainable. This should only be use if the task does not require additional training from the base model, i.e., just for inference.
+- If the task closely resembles what the model was pre-trained on, the model should perform sufficiently without further training.
 
 ### Freeze Transformer Backbone
-- Backbone layers are frozen (in this case BERT)
+
+**Description:** The backbone layers (e.g., BERT) are frozen.
 
 **Implications:**
-- Heads can be trained to adapt well to their specific task. In our case, Task A and Task B. These tasks can be trained to better fit the task.
-- Training time will be reduced since there isn't a need to update weights on our backbone. The focus will be on the heads of the model.
+- The heads can be trained to adapt to specific tasks, such as Task A (Sentence Topic Classification) and Task B (Sentiment Analysis).
+- Training time is reduced since the backbone’s weights remain unchanged. The focus shifts to training the heads.
+
 
 **Advantages:**
-- Retaining knowledge of the pre-training stage. This is useful for expanding our model to do various NLP tasks
 - Can make the head of the model specialize in a specific task without losing pre-training representations.
+- The head can specialize in a specific task without losing the benefits of the pre-trained representations.
 
 **When to train:**
-- When you have a downstream task and the model pre-trained well. If you need to perform sentiment analysis, BERT or GPT has been trained well, all you need to do is train a head to perform well in that specific task.
+- When you have a downstream task and the model was pre-trained well. For example, if you need to perform sentiment analysis, BERT or GPT is already well-trained, and you only need to train the head for your specific task.
 
 ### Freeze Task-Specifc Head
-- One task-specifc head is frozen.
+
+**Description:** One task-specifc head is frozen.
 
 **Implications:**
-- While freezing one head, this allows the other head to train while you preserve the features of the frozen head.
-- While a head is learning, it doesn't interfer with the other head's performance.
+- Freezing one head allows the other head to train while preserving the features of the frozen head.
+- While one head is learning, it does not interfere with the performance of the other head.
 
 **Advantages:**
-- Where tasks share a lot of the same information (i.e Topic Classification & Sentiment Analysis), but one task (Sentiment Analysis) is performing worse. This requires that head ot be focused more on to perform better.
+- This is useful when tasks share a lot of the same information (e.g., Topic Classification & Sentiment Analysis), but one task (e.g., Sentiment Analysis) is performing poorly. Freezing the better-performing head allows more focus on improving the underperforming task.
 - Prevents the frozen head from overfitting, while the unfrozen head can adapt to its specific task.
 
 **When to train:**
-When your model is learning for more than two tasks. If one tasks performs well, and the other tasks requires more optimization, You can freeze the well optimized head, and train the poorly optimized head without changing the weights of the better optimized task.
+- When training for more than two tasks. If one task performs well and another requires more optimization, you can freeze the better-optimized head and train the poorly optimized head without affecting the other task.
 
 ### Transfer Learning Process
 
-Considering the scenario where transfer learning can be beneficial for this specific project. I will go through
+Considering the scenario where transfer learning can be beneficial for this specific project, I will outline the following:
 - 1: The choice of a pre-trained model
 - 2: The layers I would freeze/unfreeze
 - 3: The rational behind these choices
 
 **Choice of a pre-trained model:**
 
-In terms of chooseing a pre-trained model, I would choose a model that is already trained on a similar task. For example, In this project, I was to create a sentence transformer that produced sentence embeddings and peform topic classification and sentiment analysis. Choosing a model like ```bert-base-cased``` to perform transfer learning would be beneficial for me, since BERT has been trained on a large corpus of text, learning semantics, syntax, and some domain-specifc nuances. With only a small amount of labeled data, I can fine-tune the model to perform my specific task.
+When selecting a pre-trained model, I would choose one that has already been trained on a similar task. For example, in this project, where I am creating a sentence transformer to generate sentence embeddings for topic classification and sentiment analysis, a model like ```bert-base-cased``` would be ideal. BERT has been trained on a large corpus of text, learning general semantics, syntax, and some domain-specific nuances. With a small amount of labeled data, I can fine-tune the model to perform the specific tasks effectively.
 
-If I were to do a different NLP task, a domain-specific task similar to analyzing legal documents, I would use the pre-trained model LegalBERT, which has been trained on legal documents.
+If the task were domain-specific, such as analyzing legal documents, I would use a model like LegalBERT, which has been specifically trained on legal texts.
 
-The choice of a pre-trained model varies on the task you are trying to perform, but in my case, performing topic classification and sentiment analysis, a general NLP model like BERT is useful.
+The choice of the pre-trained model depends on the task. In my case, since the tasks are general NLP tasks (topic classification and sentiment analysis), a general NLP model like BERT is suitable.
 
-**The Layers I would freeze/unfreeze
+**The Layers I would freeze/unfreeze**
 
-- **Freezing Entire Backbone:** When the pre-trained features are similar or aligned with my task at hand. If I don't need the model to learn, and want to utilize the pre-trained representations, freezing the entire backbone would be benefical for me.
-- **Unfreeze Top Layers:** When I want the model to perform better on a specifc task, unfreezing the top layers will allow the model to adjust to the dataset wtihout losing benefits of the pre-trained knowledge. This will capture task-specific semantics.
-- **Unfreeze Entire Model:** If I have an enormous amount of data, time, and resources, unfreezing the entire model will allow the model to fully adapt to the new task and domain.
+- **Freeze Entire Backbone:** If the pre-trained features are highly aligned with the task, I would freeze the entire backbone to leverage the pre-trained representations without additional training. This is beneficial if I don't need the model to adapt to new tasks and want to use the pre-trained knowledge directly.
 
-In my scenario, this project, unfreezing the top layers and feeding task specific data as training for topic classificaion and semantic analysis would be beneficial for me. As BERT is a general NLP, it isn't suited for my tasks. And since I don't have a huge amount of data and resources, I cannot fully adapt a model to do my tasks. 
+- **Unfreeze Top Layers:** If I want the model to improve performance on a specific task, unfreezing the top layers will allow the model to adapt to the dataset without losing the benefits of pre-trained knowledge. This helps capture task-specific semantics while retaining the general knowledge learned during pre-training.
 
-Unfreezing the top layers will allow me to use BERT's pre-trained knowledge and knowledge gained from training the top layers with domain-specific task data to have my model perform well on a given task. (Topic Classification & Semantic Analysis.
+- **Unfreeze Entire Model: If I have a large amount of data, time, and resources, unfreezing the entire model would allow the model to fully adapt to the new task and domain. However, for most cases, this is not necessary.
+
+In my scenario, where the project involves creating a sentence transformer for topic classification and sentiment analysis, unfreezing the top layers would be most beneficial. Since BERT is a general-purpose NLP model, it is not directly optimized for my tasks. Given my limited data and resources, I cannot afford to fully fine-tune the entire model.
+
+Unfreezing the top layers will enable me to benefit from the pre-trained knowledge in BERT while adapting the model to my specific tasks through the top layers. This allows for a balance between using BERT’s pre-trained knowledge and customizing the model to perform well on topic classification and sentiment analysis.
