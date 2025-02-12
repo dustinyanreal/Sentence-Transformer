@@ -53,9 +53,18 @@ class SentenceTransformer(nn.Module):
 
 ## Task 2: Multi-Task Learning Expansion
 
-For Task 2, I expanded my ``` class SentenceTransformer(nn.Module) ``` to be able to do Sentence Classification and Sentiment Analysis.
+For Task 2, I extended my ``` SentenceTransformer(nn.Module)``` class to support sentence classification and sentiment analysis. This allows the model to not only generate sentence embeddings but also perform other NLP tasks.
 
-When initalizing, I added the number of topics, number of sentiments, and 2 heads for predicting the topic and analyzing the sentiment.
+
+### Initlization
+
+In the ``` __init__``` method, I added two new parameters:
+- ```num_classes```: this represents the number of possible topics in sentence classification. Defaults to ``` 0``` if unspecified.
+- ``num_sentiments```: this represents the number of different sentiment categories. Defaults to ``` 0``` if unspecified.
+
+I also added two separate linear layers as classification heads:
+- ```self.topic_head```: this predicts the topic of a given sentence
+- ```self.sentiment_head```: this analyzes the sentiment of a given sentence
 ```python
 
 def __init__(self,
@@ -75,9 +84,18 @@ def __init__(self,
     #Sentiment head is used to analyze the sentiment of a given sentence.
     self.topic_head = nn.Linear(self.model.config.hidden_size, self.num_sentiments #NEW
 ```
+This design ensures that if no topics or sentiments are provided, the model still functions as a sentence embedder.
 
-Along with adding new elements to the initalization phase, I also added two functions, **forward** and **predict**.
-``` def forward(self, inputs) ``` is essentially the same as encode, but can be used to input embeddings into different heads to return a different output to a given NLP task.
+### Adding forward and predict Functions
+
+I introduced two new functions:
+- ```forward```: handles computation, generating sentence embeddings and passing them through the different classification heads
+- ```predict```: converts embeddings, inference through ```forward```, applies softmax for probability distribution, and determines the most likely topic and sentiment.
+
+### forward Function
+
+The forward function takes tokenized inputs and generates sentence embeddings. These embeddings are then fed into classification heads for topic prediciton and sentiment analysis.
+
 ```python
 def forward(self, inputs):
     output = self.model(**inputs)
@@ -89,6 +107,12 @@ def forward(self, inputs):
 
     return sentence_embedding, topic_logits, sentiment_logits
 ```
+
+The implementation is similar to the ```encode``` function in task one, where instead of just returning the sentence embedding when I normalize it, I pass the normalized embedding into the different classification heads, ```topic_head``` and ```sentiment_head```.
+
+### predict Function
+
+The predict function provides inference on raw text. It tokenizes the sentence, passes it through ```forward```, applies softmax to convert logits into probabilities, and extracts the most probable class using argmax.
 
 ``` def predict(self, sentence) ``` is used like the function states, it predicts the outcome of a sentence topic and analyzes the sentiment of a sentence.
 ```python
@@ -113,3 +137,6 @@ def predict(self, sentence):
                 "sentiment": predicted_sentiment.item()
                 }
 ```
+
+- Softmax is used to convert logits into probabilities that sum up to 1. The higher the softmax probability, the more confident the model is to predict if a sentence is under a specific topic.
+- Argmax, selects the class with the highest confidence, just finds the max index.
