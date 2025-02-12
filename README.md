@@ -104,8 +104,8 @@ Instead of training two separate models, I designed a shared transformer backbon
 def __init__(self,
              model = MODEL,
              tokenizer = TOKENIZER,
-             num_classes=0 # *NEW* used for the number of topics to be found. Initialized to 0 if nothing is found
-             num_sentiments=0 # *NEW* used for the number of different sentiments. Initiliazed to 0 if nothing is found
+             num_classes=0, # *NEW* used for the number of topics to be found. Initialized to 0 if nothing is found
+             num_sentiments=0): # *NEW* used for the number of different sentiments. Initiliazed to 0 if nothing is found
 
     super(SentenceTransformer, self).__init__()
     self.model = MODEL
@@ -131,7 +131,7 @@ This design ensures that if no topics or sentiments are provided, the model stil
 ```python
 def forward(self, inputs):
     output = self.model(**inputs)
-    mean_output = out.last_hidden_state.mean(dim=1)
+    mean_output = output.last_hidden_state.mean(dim=1)
     sentence_embedding = F.normalize(mean_output, p=2, dim=1)
     
     topic_logits = self.topic_head(sentence_embedding)
@@ -165,7 +165,7 @@ def predict(self, sentence):
         predicted_sentiment = torch.argmax(sentiment_probs, dim=1)
 
         return {
-                "topic: predicted_topic.item(),
+                "topic": predicted_topic.item(),
                 "sentiment": predicted_sentiment.item()
                 }
 ```
