@@ -17,7 +17,6 @@ class SentenceTransformer(nn.Module):
         self.tokenizer = TOKENIZER
         self.num_classes = num_classes
         self.num_sentiments = num_sentiments
-        self.dropout = nn.Dropout(0.1)
 
         self.topic_head = nn.Linear(self.model.config.hidden_size, self.num_classes)
 
@@ -27,11 +26,10 @@ class SentenceTransformer(nn.Module):
         output = self.model(**inputs)
         mean_output = output.last_hidden_state.mean(dim=1)
         sentence_embedding = F.normalize(mean_output, p=2, dim=1)
-        mean_output = self.dropout(mean_output)
         
-        topic_logits = self.topic_head(mean_output)
+        topic_logits = self.topic_head(sentence_embedding)
 
-        sentiment_logits = self.sentiment_head(mean_output)
+        sentiment_logits = self.sentiment_head(sentence_embedding)
 
         return sentence_embedding, topic_logits, sentiment_logits
 
