@@ -123,7 +123,7 @@ This design ensures that if no topics or sentiments are provided, the model stil
 ### Handling Inputs
 
 **Forward Pass:**
-- Tokenize input -> Convert tedxt into numerical embeddings.
+- Tokenize input -> Convert text into numerical embeddings.
 - Generate sentence embeddings -> Extract from the final BERT layer.
 - Apply mean pooling
 - Pass embeddings to classification heads.
@@ -243,7 +243,7 @@ The choice of the pre-trained model depends on the task. In my case, since the t
 
 - **Unfreeze Top Layers:** If I want the model to improve performance on a specific task, unfreezing the top layers will allow the model to adapt to the dataset without losing the benefits of pre-trained knowledge. This helps capture task-specific semantics while retaining the general knowledge learned during pre-training.
 
-- **Unfreeze Entire Model: If I have a large amount of data, time, and resources, unfreezing the entire model would allow the model to fully adapt to the new task and domain. However, for most cases, this is not necessary.
+- **Unfreeze Entire Model:** If I have a large amount of data, time, and resources, unfreezing the entire model would allow the model to fully adapt to the new task and domain. However, for most cases, this is not necessary.
 
 In my scenario, where the project involves creating a sentence transformer for topic classification and sentiment analysis, unfreezing the top layers would be most beneficial. Since BERT is a general-purpose NLP model, it is not directly optimized for my tasks. Given my limited data and resources, I cannot afford to fully fine-tune the entire model.
 
