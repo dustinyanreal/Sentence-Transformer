@@ -1,5 +1,25 @@
 # Sentence Transformer
 
+## Instalation
+
+Clone this repository: Sentence-Transformer ```bash git clone https://github.com/dustinyanreal/Sentence-Transformer.git```
+
+Navigate to the Sentence-Transformer directory:
+```bash
+cd Sentence-Transformer
+```
+Inside the Sentence-Transformer folder, you will find either a requirements.txt for pip installation or an environment.yml for setting up a conda environment.
+
+**To install dependencies using requirements.txt with pip:**
+```bash
+pip install -r requiments.txt
+```
+
+**To create a conda environment using environment.yml:**
+```bash
+conda env create -f environment.yml
+```
+
 ## Overview
 
 This project processes sentences to generate embeddings for various NLP tasks. These embeddings are then used for sentence classification and sentiment analysis, enabling deeper insights into textual data.
