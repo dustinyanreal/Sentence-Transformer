@@ -1,8 +1,8 @@
 # Sentence Transformer
 
-## Instalation
+## Installation
 
-Clone this repository: Sentence-Transformer ```bash git clone https://github.com/dustinyanreal/Sentence-Transformer.git```
+Clone this repository: Sentence-Transformer ```git clone https://github.com/dustinyanreal/Sentence-Transformer.git```
 
 Navigate to the Sentence-Transformer directory:
 ```bash
@@ -19,6 +19,36 @@ pip install -r requiments.txt
 ```bash
 conda env create -f environment.yml
 ```
+
+
+## How to Run
+
+**To run this project, simply execute:**
+```bash
+python run.py
+```
+
+This will start the project, prompting you to enter sentences. The program will then generate sentence embeddings, perform Task A (Topic Classification), and Task B (Sentiment Analysis). To exit, type ```exit``` or ```q```.
+
+Alternatively, you can also run the project using a custom JSON file to provide your own ```topic_labels```, ```sentiment_labels```, and ```sentences```. Here's an example of how the JSON file should look. 
+```json
+{
+    "topic_labels": ["Food", "Comedy", "Technology", "Sports", "School"],
+    "sentiment_labels": ["Positive", "Neutral", "Negative"],
+    "sentences": [
+        "I like Food.",
+        "Why did the chicken cross the road?",
+        "This new iPhone is great!"
+    ]
+}
+```
+To use the JSON file, simply run:
+
+```bash
+python run.py input.json
+```
+
+This will process the provided ```.json``` file, outputting each sentence with its corresponding sentence embedding, topic classification, and sentiment analysis results.
 
 ## Overview
 
